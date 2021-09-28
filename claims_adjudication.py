@@ -11,7 +11,16 @@ from product import Product
 # after comparing claims to the benefit or coverage requirements.
 
 class ClaimsAdjudication:
-  def adjudicate(contract, new_claim):
+  @classmethod
+  def limit_of_liability(cls, contract):
     claim_total = sum(claim.amount for claim in contract.claims)
-    if((contract.purchase_price - claim_total) * 0.8 > new_claim.amount) and contract.status == "ACTIVE" and new_claim.failure_date >= contract.effective_date and new_claim.failure_date <= contract.expiration_date:
+    return (contract.purchase_price - claim_total) * 0.8
+
+  @classmethod
+  def in_effect_for(cls, contract, failure_date):
+    return contract.status == "ACTIVE" and failure_date >= contract.effective_date and failure_date <= contract.expiration_date
+
+  @classmethod
+  def adjudicate(cls, contract, new_claim):
+    if(cls.limit_of_liability(contract) > new_claim.amount) and cls.in_effect_for(contract, new_claim.failure_date):
         contract.claims.append(new_claim)
