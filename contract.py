@@ -9,7 +9,7 @@ from product import Product
 
 class Contract:
   def __init__(self, purchase_price, product: Product, effective_date, expiration_date, purchase_date):
-    self.id              = uuid.uuid1()
+    self.id              = uuid.uuid1() # auto assigned unique id
     self.purchase_price  = purchase_price
     self.status          = "PENDING"
     self.product         = product
