@@ -4,15 +4,18 @@ from contract import Contract
 from product import Product
 from claim import Claim
 from claims_adjudication import ClaimsAdjudication
+from terms_and_conditions import TermsAndConditions
 
 class TestAdjudicateValidClaim(unittest.TestCase):
 
     def fake_contract(self):
         product  = Product("dishwasher", "OEUOEU23", "Whirlpool", "7DP840CWDB0")
-        contract = Contract(100.0, product, datetime.datetime(2010, 5, 8), datetime.datetime(2013, 5, 8), datetime.datetime(2010, 5, 7))
+        terms_and_conditions  = TermsAndConditions(datetime.datetime(2010, 5, 7), datetime.datetime(2010, 5, 8), datetime.datetime(2013, 5, 8))
+        contract = Contract(100.0, product, terms_and_conditions)
         contract.status = "ACTIVE"
         return contract
 
+    # Now that we have this logic moved to Contract, we could mock out contract.covers() and simplify these tests
     def test_adjudicate_valid_claim(self):
         contract = self.fake_contract()
 
