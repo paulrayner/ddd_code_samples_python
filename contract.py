@@ -3,6 +3,7 @@ import datetime
 from product import Product
 from terms_and_conditions import TermsAndConditions
 from subscription_renewed import SubscriptionRenewed
+from customer_reimbursement_requested import CustomerReimbursementRequested
 
 # Contract represents an extended warranty for a covered product.
 # A contract is in a PENDING state prior to the effective date,
@@ -36,6 +37,10 @@ class Contract:
   def extend_annual_subscription(self):
      self.terms_and_conditions = self.terms_and_conditions.annually_extended()
      self.events.append(SubscriptionRenewed(self.id, "Automatic Annual Renewal"))
+
+  def terminate(self, rep_name, reason):
+     self.status = "FULFILLED"
+     self.events.append(CustomerReimbursementRequested(self.id, "Debbie", "Limit of Liability Exceeded"))
 
   def __eq__(self, other):
     if not isinstance(other, Contract):
