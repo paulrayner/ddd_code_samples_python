@@ -12,7 +12,7 @@ class TestContract(unittest.TestCase):
 
     def test_contract_is_set_up_correctly(self):
         product  = Product("dishwasher", "OEUOEU23", "Whirlpool", "7DP840CWDB0")
-        terms_and_conditions  = TermsAndConditions(datetime.datetime(2010, 5, 7), datetime.datetime(2010, 5, 8), datetime.datetime(2013, 5, 8))
+        terms_and_conditions  = TermsAndConditions(datetime.date(2010, 5, 7), datetime.date(2010, 5, 8), datetime.date(2013, 5, 8))
         contract = Contract(100.0, product, terms_and_conditions)
 
         self.assertTrue(hasattr(contract, "id"))
@@ -23,44 +23,44 @@ class TestContract(unittest.TestCase):
 
     def test_contract_in_effect_for_dates(self):
         product  = Product("dishwasher", "OEUOEU23", "Whirlpool", "7DP840CWDB0")
-        terms_and_conditions  = TermsAndConditions(datetime.datetime(2010, 5, 7), datetime.datetime(2010, 5, 8), datetime.datetime(2013, 5, 8))
+        terms_and_conditions  = TermsAndConditions(datetime.date(2010, 5, 7), datetime.date(2010, 5, 8), datetime.date(2013, 5, 8))
         contract = Contract(100.0, product, terms_and_conditions)
 
         # Check (default) pending state
-        self.assertFalse(contract.in_effect_for(datetime.datetime(2010, 5, 9)))
+        self.assertFalse(contract.in_effect_for(datetime.date(2010, 5, 9)))
 
         # Check date range for active contract
         contract.status = "ACTIVE"
-        self.assertFalse(contract.in_effect_for(datetime.datetime(2010, 5, 7)))
-        self.assertTrue(contract.in_effect_for(datetime.datetime(2010, 5, 8)))
-        self.assertTrue(contract.in_effect_for(datetime.datetime(2013, 5, 8)))
-        self.assertFalse(contract.in_effect_for(datetime.datetime(2013, 5, 9)))
+        self.assertFalse(contract.in_effect_for(datetime.date(2010, 5, 7)))
+        self.assertTrue(contract.in_effect_for(datetime.date(2010, 5, 8)))
+        self.assertTrue(contract.in_effect_for(datetime.date(2013, 5, 8)))
+        self.assertFalse(contract.in_effect_for(datetime.date(2013, 5, 9)))
 
     def test_contract_limit_of_liability_no_claims(self):
         product  = Product("dishwasher", "OEUOEU23", "Whirlpool", "7DP840CWDB0")
-        terms_and_conditions  = TermsAndConditions(datetime.datetime(2010, 5, 7), datetime.datetime(2010, 5, 8), datetime.datetime(2013, 5, 8))
+        terms_and_conditions  = TermsAndConditions(datetime.date(2010, 5, 7), datetime.date(2010, 5, 8), datetime.date(2013, 5, 8))
         contract = Contract(100.0, product, terms_and_conditions)
 
         self.assertEqual(contract.limit_of_liability(), 80.0)
 
     def test_contract_limit_of_liability_multiple_claims(self):
         product  = Product("dishwasher", "OEUOEU23", "Whirlpool", "7DP840CWDB0")
-        terms_and_conditions  = TermsAndConditions(datetime.datetime(2010, 5, 7), datetime.datetime(2010, 5, 8), datetime.datetime(2013, 5, 8))
+        terms_and_conditions  = TermsAndConditions(datetime.date(2010, 5, 7), datetime.date(2010, 5, 8), datetime.date(2013, 5, 8))
         contract = Contract(100.0, product, terms_and_conditions)
 
-        contract.claims.append(Claim(10.0, datetime.datetime(2010, 5, 8)))
-        contract.claims.append(Claim(20.0, datetime.datetime(2010, 5, 8)))
+        contract.claims.append(Claim(10.0, datetime.date(2010, 5, 8)))
+        contract.claims.append(Claim(20.0, datetime.date(2010, 5, 8)))
 
         self.assertEqual(contract.limit_of_liability(), 50.0)
 
     def test_contract_extend_annual_subscription(self):
         product  = Product("dishwasher", "OEUOEU23", "Whirlpool", "7DP840CWDB0")
-        terms_and_conditions  = TermsAndConditions(datetime.datetime(2010, 5, 7), datetime.datetime(2010, 5, 8), datetime.datetime(2013, 5, 8))
+        terms_and_conditions  = TermsAndConditions(datetime.date(2010, 5, 7), datetime.date(2010, 5, 8), datetime.date(2013, 5, 8))
         contract = Contract(100.0, product, terms_and_conditions)
 
         contract.extend_annual_subscription()
 
-        extended_terms_and_conditions  = TermsAndConditions(datetime.datetime(2010, 5, 7), datetime.datetime(2010, 5, 8), datetime.datetime(2014, 5, 8))
+        extended_terms_and_conditions  = TermsAndConditions(datetime.date(2010, 5, 7), datetime.date(2010, 5, 8), datetime.date(2014, 5, 8))
         self.assertEqual(extended_terms_and_conditions, contract.terms_and_conditions)
         self.assertEqual(1, len(contract.events))
         self.assertTrue(isinstance(contract.events[0], SubscriptionRenewed))
@@ -88,7 +88,7 @@ class TestContract(unittest.TestCase):
     # entities compare by unique IDs, not properties
     def test_contract_equality(self):
         product  = Product("dishwasher", "OEUOEU23", "Whirlpool", "7DP840CWDB0")
-        terms_and_conditions  = TermsAndConditions(datetime.datetime(2010, 5, 7), datetime.datetime(2010, 5, 8), datetime.datetime(2013, 5, 8))
+        terms_and_conditions  = TermsAndConditions(datetime.date(2010, 5, 7), datetime.date(2010, 5, 8), datetime.date(2013, 5, 8))
 
         contract1 = Contract(100.0, product, terms_and_conditions)
         contract2 = Contract(100.0, product, terms_and_conditions)
