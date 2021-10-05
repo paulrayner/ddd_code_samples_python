@@ -6,6 +6,7 @@ from contract import Contract
 from product import Product
 from claim import Claim
 from terms_and_conditions import TermsAndConditions
+from subscription_renewed import SubscriptionRenewed
 
 class TestContract(unittest.TestCase):
 
@@ -61,6 +62,11 @@ class TestContract(unittest.TestCase):
 
         extended_terms_and_conditions  = TermsAndConditions(datetime.datetime(2010, 5, 7), datetime.datetime(2010, 5, 8), datetime.datetime(2014, 5, 8))
         self.assertEqual(extended_terms_and_conditions, contract.terms_and_conditions)
+        self.assertEqual(1, len(contract.events))
+        self.assertTrue(isinstance(contract.events[0], SubscriptionRenewed))
+        self.assertEqual(datetime.date.today(), contract.events[0].occurred_on)
+        self.assertEqual(contract.id, contract.events[0].contract_id)
+        self.assertEqual("Automatic Annual Renewal", contract.events[0].reason)
 
     # entities compare by unique IDs, not properties
     def test_contract_equality(self):

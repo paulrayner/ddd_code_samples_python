@@ -2,6 +2,7 @@ import uuid
 import datetime
 from product import Product
 from terms_and_conditions import TermsAndConditions
+from subscription_renewed import SubscriptionRenewed
 
 # Contract represents an extended warranty for a covered product.
 # A contract is in a PENDING state prior to the effective date,
@@ -16,6 +17,7 @@ class Contract:
     self.product              = product
     self.terms_and_conditions = terms_and_conditions
     self.claims               = []
+    self.events               = []
 
   def covers(self, claim):
      return self.in_effect_for(claim.failure_date) and self.within_limit_of_liability(claim.amount)
@@ -33,6 +35,7 @@ class Contract:
 
   def extend_annual_subscription(self):
      self.terms_and_conditions = self.terms_and_conditions.annually_extended()
+     self.events.append(SubscriptionRenewed(self.id, "Automatic Annual Renewal"))
 
   def __eq__(self, other):
     if not isinstance(other, Contract):
