@@ -68,6 +68,23 @@ class TestContract(unittest.TestCase):
         self.assertEqual(contract.id, contract.events[0].contract_id)
         self.assertEqual("Automatic Annual Renewal", contract.events[0].reason)
 
+    # TODO: Practice using domain events by making this test pass
+    def test_contract_termination(self):
+        product  = Product("dishwasher", "OEUOEU23", "Whirlpool", "7DP840CWDB0")
+        terms_and_conditions  = TermsAndConditions(datetime.date(2010, 5, 7), datetime.date(2010, 5, 8), datetime.date(2013, 5, 8))
+        contract = Contract(100.0, product, terms_and_conditions)
+
+        contract.terminate("Debbie", "Limit of Liability Exceeded")
+
+        self.assertEqual("FULFILLED", contract.status)
+        self.assertEqual(1, len(contract.events))
+        self.assertTrue(isinstance(contract.events[0], CustomerReimbursementRequested))
+        self.assertEqual(datetime.date.today(), contract.events[0].occurred_on)
+        self.assertEqual(contract.id, contract.events[0].contract_id)
+        self.assertEqual("Debbie", contract.events[0].rep_name)
+        self.assertEqual("Limit of Liability Exceeded", contract.events[0].reason)
+        self.assertFalse(contract.in_effect_for(datetime.date.today()))
+
     # entities compare by unique IDs, not properties
     def test_contract_equality(self):
         product  = Product("dishwasher", "OEUOEU23", "Whirlpool", "7DP840CWDB0")
